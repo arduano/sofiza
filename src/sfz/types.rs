@@ -14,6 +14,7 @@
 
 use std::collections::HashMap;
 use std::path::PathBuf;
+use std::rc::Rc;
 
 use crate::sfz::Opcode;
 
@@ -38,7 +39,34 @@ pub enum OpcodeType {
 }
 
 /// A Hashmap of opcodes, in which the key is the opcode's name
-pub type OpcodeMap = HashMap<String, Opcode>;
+#[derive(Debug)]
+pub struct OpcodeMap {
+    map: HashMap<String, Opcode>,
+    parent: Option<Rc<OpcodeMap>>,
+}
+
+impl OpcodeMap {
+    pub fn new(parent: Option<Rc<OpcodeMap>>) -> Self {
+        Self {
+            map: HashMap::new(),
+            parent: parent,
+        }
+    }
+
+    pub fn get(&self, key: &str) -> Option<&Opcode> {
+        let val = self.map.get(key);
+        match val {
+            Some(val) => Some(val),
+            None => self.parent.as_ref()?.get(key),
+        }
+    }
+
+    pub fn add_opcode(&mut self, opcode: Opcode) {
+        let name = opcode.str_name();
+        self.map.remove(&name);
+        self.map.insert(name, opcode);
+    }
+}
 
 /// Allows playing samples with loops defined in the unlooped mode.
 ///

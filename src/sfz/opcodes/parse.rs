@@ -134,6 +134,7 @@ impl Opcode {
     // (thos opcodes can even be of a different different type in each version)
 
     pub(crate) fn parse_opcode(lex: &mut Lexer<SfzToken>) -> Option<Opcode> {
+        println!("Parsing opcode");
         // TODO: return also the opcode name parameters
         // pub(crate) fn parse_opcode(lex: &mut Lexer<SfzToken>)
         //     -> (Option<Opcode>, Option<vec![u8]>) {
@@ -256,7 +257,7 @@ pub(crate) enum SfzToken {
     /// **sample**, which must not have any other opcode after it in the same
     /// line, in order to recognize filenames with spaces.
     #[regex("sample=.+", Opcode::parse_opcode)]
-    #[regex("[a-zA-Z0-9_]+=[\\w.]+", Opcode::parse_opcode)]
+    #[regex("[a-zA-Z0-9_]+=[\\w\\.\\d\\-]+", Opcode::parse_opcode)]
     Opcode(Opcode),
 
     #[regex(r"[ \t\n\f]+", logos::skip)]

@@ -16,5 +16,5 @@ fn main() {
 
     println!("{:#?}", i);
 
-    println!("groups: {}\nregions: {}", i.groups(), i.regions());
+    // println!("regions: {:?}", i.regions);
 }
