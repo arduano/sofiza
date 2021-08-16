@@ -1,3 +1,42 @@
+use std::collections::HashMap;
+
+use lazy_static::lazy_static;
+
+fn build_key_name_map() -> HashMap<String, i8> {
+    let mut map = HashMap::new();
+    let keynames = [
+        ["a", "a"],
+        ["a#", "bb"],
+        ["b", "b"],
+        ["c", "c"],
+        ["c#", "db"],
+        ["d", "d"],
+        ["d#", "eb"],
+        ["e", "e"],
+        ["f", "f"],
+        ["f#", "gb"],
+        ["g", "g"],
+        ["g#", "ab"],
+    ];
+    for i in -1i8..=127 {
+        let key = (i as i32 + 4) % 12;
+        let octave = (i as i32 + 1) / 12 - 1;
+        let name = format!("{}{}", keynames[key as usize][0], octave);
+        map.insert(name, i as i8);
+        let name = format!("{}{}", keynames[key as usize][1], octave);
+        map.insert(name, i as i8);
+    }
+    map
+}
+
+fn key_name_map() -> &'static HashMap<String, i8> {
+    lazy_static! {
+        static ref KEY_MAP: HashMap<String, i8> = build_key_name_map();
+    };
+
+    &KEY_MAP
+}
+
 /// Receive a string, try to parse it as f32
 ///
 pub(crate) fn check_f32(value: &str) -> f32 {
@@ -19,6 +58,46 @@ pub(crate) fn check_f32_between(value: &str, min: f32, max: f32) -> Option<f32> 
         num if (min..=max).contains(&num) => Some(num),
         _ => None,
     }
+}
+
+/// Receive a string, try to parse it as key or u8
+///
+pub(crate) fn check_u8_key(value: &str) -> Option<u8> {
+    let keyval = key_name_map().get(&value.to_lowercase());
+    if let Some(key) = keyval {
+        let key = *key;
+        if key < 0 {
+            return None;
+        }
+        return Some(key as u8);
+    }
+    let num: u8 = value
+        .parse::<u8>()
+        .expect(&format!("ERROR: `{}` is not a valid i8 number", value));
+    if num > 127 {
+        return None;
+    }
+    Some(num)
+}
+
+/// Receive a string, try to parse it as key or i8
+///
+pub(crate) fn check_i8_key(value: &str) -> Option<i8> {
+    let keyval = key_name_map().get(&value.to_lowercase());
+    if let Some(key) = keyval {
+        let key = *key;
+        if key < -1 {
+            return None;
+        }
+        return Some(key as i8);
+    }
+    let num: i8 = value
+        .parse::<i8>()
+        .expect(&format!("ERROR: `{}` is not a valid i8 number", value));
+    if num < -1 {
+        return None;
+    }
+    Some(num)
 }
 
 /// Receive a string, try to parse it as u8

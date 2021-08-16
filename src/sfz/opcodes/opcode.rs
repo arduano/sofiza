@@ -197,23 +197,23 @@ pub enum Opcode {
     ///
     /// The region will play if the note played is >= lokey && <= hikey.
     ///
-    /// - range: 0 to 127
+    /// - range: -1 to 127
     /// - default: 0
-    /// - version: v1
+    /// - version: v2
     /// - info: [lokey](https://sfzformat.com/opcodes/lokey)
     ///
-    lokey(u8),
+    lokey(i8),
 
     /// Determine the high boundary of a certain region.
     ///
     /// The region will play if the note played is >= lokey && <= hikey.
     ///
-    /// - range: 0 to 127
+    /// - range: -1 to 127
     /// - default: 127
-    /// - version: v1
+    /// - version: v2
     /// - info: [hikey](https://sfzformat.com/opcodes/hikey)
     ///
-    hikey(u8),
+    hikey(i8),
 
     ///
     /// - range: 0 to 127

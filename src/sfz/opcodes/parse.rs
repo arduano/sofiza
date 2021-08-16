@@ -134,7 +134,6 @@ impl Opcode {
     // (thos opcodes can even be of a different different type in each version)
 
     pub(crate) fn parse_opcode(lex: &mut Lexer<SfzToken>) -> Option<Opcode> {
-        println!("Parsing opcode");
         // TODO: return also the opcode name parameters
         // pub(crate) fn parse_opcode(lex: &mut Lexer<SfzToken>)
         //     -> (Option<Opcode>, Option<vec![u8]>) {
@@ -184,11 +183,11 @@ impl Opcode {
                 utils::check_i16_between(value, -9600, 9600).map(Opcode::fil_veltrack)
             }
             // NOTE: hikey v2 accepts i8, from -1:
-            ("hikey", _) => utils::check_u8_between(value, 0, 127).map(Opcode::hikey),
+            ("hikey", _) => utils::check_i8_key(value).map(Opcode::hikey),
             ("hivel", _) => utils::check_u8_between(value, 0, 127).map(Opcode::hivel),
             ("hirand", _) => utils::check_f32_between(value, 0., 1.).map(Opcode::hirand),
             // NOTE: lokey v2 accepts i8, from -1:
-            ("lokey", _) => utils::check_u8_between(value, 0, 127).map(Opcode::lokey),
+            ("lokey", _) => utils::check_i8_key(value).map(Opcode::lokey),
             ("lovel", _) => utils::check_u8_between(value, 0, 127).map(Opcode::lovel),
             ("loop_mode", _) => loop_mode::from_str(value).map(Opcode::loop_mode),
             ("lorand", _) => utils::check_f32_between(value, 0., 1.).map(Opcode::lorand),
@@ -257,7 +256,7 @@ pub(crate) enum SfzToken {
     /// **sample**, which must not have any other opcode after it in the same
     /// line, in order to recognize filenames with spaces.
     #[regex("sample=.+", Opcode::parse_opcode)]
-    #[regex("[a-zA-Z0-9_]+=[\\w\\.\\d\\-]+", Opcode::parse_opcode)]
+    #[regex("[a-zA-Z0-9_]+=[\\w\\.\\d\\-#]+", Opcode::parse_opcode)]
     Opcode(Opcode),
 
     #[regex(r"[ \t\n\f]+", logos::skip)]
