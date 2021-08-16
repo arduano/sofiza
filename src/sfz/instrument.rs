@@ -120,10 +120,6 @@ impl Instrument {
 
         let lex = SfzToken::lexer(&sfz);
         for t in lex {
-            thread::sleep(Duration::from_millis(100));
-            println!("{:?}", &data.levels);
-            println!("{:?}", &data.current);
-            println!("{:?}", &t);
             match &t {
                 SfzToken::Header(h) => {
                     match h {
