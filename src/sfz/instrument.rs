@@ -157,7 +157,7 @@ impl Instrument {
                 SfzToken::Opcode(o) => {
                     if data.is_control {
                         if let Opcode::default_path(path) = o {
-                            default_path = path.clone();
+                            default_path = sfz_path.join(path.clone());
                         }
                         data.control_codes.add_opcode(o.clone());
                     } else {
