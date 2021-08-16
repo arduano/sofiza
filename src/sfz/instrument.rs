@@ -5,8 +5,6 @@ use std::{
     io::prelude::*,
     path::{Path, PathBuf},
     rc::Rc,
-    thread,
-    time::Duration,
 };
 
 use logos::Logos;
