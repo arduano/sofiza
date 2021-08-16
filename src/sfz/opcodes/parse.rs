@@ -255,6 +255,7 @@ pub(crate) enum SfzToken {
     /// **sample**, which must not have any other opcode after it in the same
     /// line, in order to recognize filenames with spaces.
     #[regex("sample=.+", Opcode::parse_opcode)]
+    #[regex("default_path=.+", Opcode::parse_opcode)]
     #[regex("[a-zA-Z0-9_]+=[\\w\\.\\d\\-#]+", Opcode::parse_opcode)]
     Opcode(Opcode),
 
